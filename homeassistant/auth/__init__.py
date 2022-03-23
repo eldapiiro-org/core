@@ -203,6 +203,10 @@ class AuthManager:
         """Retrieve all groups."""
         return await self._store.async_get_group(group_id)
 
+    async def async_get_groups(self) -> list[models.Group]:
+        """Retrieve all groups."""
+        return await self._store.async_get_groups()
+
     async def async_get_user_by_credentials(
         self, credentials: models.Credentials
     ) -> models.User | None:

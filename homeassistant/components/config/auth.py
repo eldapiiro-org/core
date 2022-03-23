@@ -13,6 +13,11 @@ SCHEMA_WS_DELETE = websocket_api.BASE_COMMAND_MESSAGE_SCHEMA.extend(
     {vol.Required("type"): WS_TYPE_DELETE, vol.Required("user_id"): str}
 )
 
+WS_TYPE_LIST_GROUPS = "config/auth/groups/list"
+SCHEMA_WS_LIST_GROUPS = websocket_api.BASE_COMMAND_MESSAGE_SCHEMA.extend(
+    {vol.Required("type"): WS_TYPE_LIST_GROUPS}
+)
+
 
 async def async_setup(hass):
     """Enable the Home Assistant views."""
@@ -24,6 +29,10 @@ async def async_setup(hass):
     )
     websocket_api.async_register_command(hass, websocket_create)
     websocket_api.async_register_command(hass, websocket_update)
+
+    websocket_api.async_register_command(
+        hass, WS_TYPE_LIST_GROUPS, websocket_list_groups, SCHEMA_WS_LIST_GROUPS
+    )
     return True
 
 
@@ -132,6 +141,15 @@ async def websocket_update(hass, connection, msg):
     )
 
 
+@websocket_api.require_admin
+@websocket_api.async_response
+async def websocket_list_groups(hass, connection, msg):
+    """Return a list of groups."""
+    result = [_group_info(u) for u in await hass.auth.async_get_groups()]
+
+    connection.send_message(websocket_api.result_message(msg["id"], result))
+
+
 def _user_info(user):
     """Format a user."""
 
@@ -154,4 +172,13 @@ def _user_info(user):
         "system_generated": user.system_generated,
         "group_ids": [group.id for group in user.groups],
         "credentials": [{"type": c.auth_provider_type} for c in user.credentials],
+    }
+
+
+def _group_info(group):
+    """Format a group."""
+
+    return {
+        "id": group.id,
+        "name": group.name,
     }
