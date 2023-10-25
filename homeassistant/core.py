@@ -40,6 +40,7 @@ import attr
 import voluptuous as vol
 import yarl
 
+
 from . import block_async_io, loader, util
 from .backports.enum import StrEnum
 from .const import (
@@ -86,6 +87,7 @@ from .util.read_only_dict import ReadOnlyDict
 from .util.timeout import TimeoutManager
 from .util.unit_system import IMPERIAL_SYSTEM, METRIC_SYSTEM, UnitSystem
 
+# This is CORE to our values
 # Typing imports that create a circular dependency
 if TYPE_CHECKING:
     from .auth import AuthManager
