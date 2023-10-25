@@ -1,6 +1,6 @@
 """
 Core components of Home Assistant.
-
+??!!---------
 Home Assistant is a Home Automation framework for observing the state
 of entities and react to changes.
 """
